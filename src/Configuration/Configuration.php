@@ -47,9 +47,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getHeight($stack)
     {
-        if (!isset($this->stacks[$stack])) {
-            throw new \InvalidArgumentException('Stack '.$stack.' does not exist');
-        }
+        $this->checkStackExists($stack);
 
         return count($this->stacks[$stack]);
     }
@@ -59,13 +57,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getTop($stack)
     {
-        if (!isset($this->stacks[$stack])) {
-            throw new \InvalidArgumentException('Stack '.$stack.' does not exist');
-        }
-
-        if (0 === count($this->stacks[$stack])) {
-            throw new \RuntimeException('Stack '.$stack.' is empty');
-        }
+        $this->checkStackNotEmpty($stack);
 
         return $this->getElement($stack, $this->getHeight($stack) - 1);
     }
@@ -75,13 +67,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getElement($stack, $index)
     {
-        if (!isset($this->stacks[$stack])) {
-            throw new \InvalidArgumentException('Stack '.$stack.' does not exist');
-        }
-
-        if (0 === count($this->stacks[$stack])) {
-            throw new \RuntimeException('Stack '.$stack.' is empty');
-        }
+        $this->checkStackNotEmpty($stack);
 
         return $this->stacks[$stack][$index];
     }
@@ -91,9 +77,7 @@ class Configuration implements ConfigurationInterface
      */
     public function push($stack, $element)
     {
-        if (!isset($this->stacks[$stack])) {
-            throw new \InvalidArgumentException('Stack '.$stack.' does not exist');
-        }
+        $this->checkStackExists($stack);
 
         $this->stacks[$stack][] = $element;
     }
@@ -103,14 +87,24 @@ class Configuration implements ConfigurationInterface
      */
     public function pop($stack)
     {
+        $this->checkStackNotEmpty($stack);
+
+        return array_pop($this->stacks[$stack]);
+    }
+
+    private function checkStackExists($stack)
+    {
         if (!isset($this->stacks[$stack])) {
             throw new \InvalidArgumentException('Stack '.$stack.' does not exist');
         }
+    }
+
+    private function checkStackNotEmpty($stack)
+    {
+        $this->checkStackExists($stack);
 
         if (0 === count($this->stacks[$stack])) {
             throw new \RuntimeException('Stack '.$stack.' is empty');
         }
-
-        return array_pop($this->stacks[$stack]);
     }
 }
