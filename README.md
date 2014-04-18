@@ -28,6 +28,7 @@ Create a file containing your BRP configuration (e.g. ``configuration.json``):
         - [1, 3, 4]
         - [2, 8, 5]
 }
+```
 
 Solve the Problem
 -----------------
