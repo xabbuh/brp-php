@@ -86,6 +86,7 @@ class LaAlgorithm implements AlgorithmInterface
             $this->doRelocateContainer($stack, $toStack, $configuration, $solution);
         } elseif (count($otherStacksLowestContainers['higher']) === 0) {
             $highestContainer = max(array_keys($otherStacksLowestContainers['all']));
+            /** @var int $highestContainerStack */
             $highestContainerStack = $otherStacksLowestContainers['all'][$highestContainer];
             $this->doRelocateContainer($stack, $highestContainerStack, $configuration, $solution);
         } else {
