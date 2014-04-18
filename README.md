@@ -23,10 +23,11 @@ Create a file containing your BRP configuration (e.g. ``configuration.json``):
 
 ```json
 {
-    "stacks":
-        - [6, 7, 9]
-        - [1, 3, 4]
-        - [2, 8, 5]
+    "stacks": [
+        [6, 7, 9],
+        [1, 3, 4],
+        [2, 8, 5]
+    ]
 }
 ```
 
