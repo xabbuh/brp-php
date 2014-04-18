@@ -23,15 +23,15 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritDoc}
      */
-    public function addStack(array $elements = array())
+    public function addStack(array $containers = array())
     {
-        foreach ($elements as $element) {
-            if (!is_int($element)) {
-                throw new \InvalidArgumentException('Only int elements can be stored');
+        foreach ($containers as $container) {
+            if (!is_int($container)) {
+                throw new \InvalidArgumentException('Only int containers can be stored');
             }
         }
 
-        $this->stacks[] = $elements;
+        $this->stacks[] = $containers;
     }
 
     /**
@@ -40,6 +40,34 @@ class Configuration implements ConfigurationInterface
     public function getStackCount()
     {
         return count($this->stacks);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getContainersCount()
+    {
+        $containersCount = 0;
+
+        for ($stack = 0; $stack < $this->getStackCount(); $stack++) {
+            $containersCount += $this->getHeight($stack);
+        }
+
+        return $containersCount;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isEmpty()
+    {
+        for ($stack = 0; $stack < $this->getStackCount(); $stack++) {
+            if (!$this->isStackEmpty($stack)) {
+                return false;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -55,17 +83,27 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritDoc}
      */
-    public function getTop($stack)
+    public function isStackEmpty($stack)
     {
-        $this->checkStackNotEmpty($stack);
+        $this->checkStackExists($stack);
 
-        return $this->getElement($stack, $this->getHeight($stack) - 1);
+        return $this->getHeight($stack) === 0;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getElement($stack, $index)
+    public function getTop($stack)
+    {
+        $this->checkStackNotEmpty($stack);
+
+        return $this->getContainer($stack, $this->getHeight($stack) - 1);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getContainer($stack, $index)
     {
         $this->checkStackNotEmpty($stack);
 
@@ -75,11 +113,51 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritDoc}
      */
-    public function push($stack, $element)
+    public function getLowestContainer()
+    {
+        $lowestContainer = null;
+
+        for ($stack = 0; $stack < $this->getStackCount(); $stack++) {
+            if ($this->isStackEmpty($stack)) {
+                continue;
+            }
+
+            $lowestContainerInStack = $this->getLowestContainerInStack($stack);
+
+            if (null === $lowestContainer || $lowestContainerInStack < $lowestContainer) {
+                $lowestContainer = $lowestContainerInStack;
+            }
+        }
+
+        return $lowestContainer;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLowestContainerInStack($stack)
+    {
+        $this->checkStackNotEmpty($stack);
+
+        $lowestContainer = $this->getContainer($stack, 0);
+
+        for ($container = 1; $container < $this->getHeight($stack); $container++) {
+            if ($this->getContainer($stack, $container) < $lowestContainer) {
+                $lowestContainer = $this->getContainer($stack, $container);
+            }
+        }
+
+        return $lowestContainer;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function push($stack, $container)
     {
         $this->checkStackExists($stack);
 
-        $this->stacks[$stack][] = $element;
+        $this->stacks[$stack][] = $container;
     }
 
     /**
@@ -90,6 +168,36 @@ class Configuration implements ConfigurationInterface
         $this->checkStackNotEmpty($stack);
 
         return array_pop($this->stacks[$stack]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getStackContainingContainer($container)
+    {
+        for ($stack = 0; $stack < $this->getStackCount(); $stack++) {
+            if ($this->stackContainsContainer($stack, $container)) {
+                return $stack;
+            }
+        }
+
+        throw new \RuntimeException('Stacks do not contain container '.$container);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function stackContainsContainer($stack, $container)
+    {
+        $this->checkStackExists($stack);
+
+        for ($i = 0; $i < $this->getHeight($stack); $i++) {
+            if ($this->getContainer($stack, $i) === $container) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function checkStackExists($stack)

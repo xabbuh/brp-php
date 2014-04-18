@@ -40,7 +40,7 @@ class ConsoleDumper implements DumperInterface
 
             for ($stack = 0; $stack < $configuration->getStackCount(); $stack++) {
                 if ($configuration->getHeight($stack) > $i) {
-                    $this->output->write($configuration->getElement($stack, $i));
+                    $this->output->write($configuration->getContainer($stack, $i));
                 } else {
                     $this->output->write(' ');
                 }
