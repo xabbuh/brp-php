@@ -37,5 +37,5 @@ Solve the Problem
 Solve the problem running the ``brp:configuration:solve`` command:
 
 ```bash
-$ php bin/application.php brp:configuration:solve --algorithm=la configuration.json
+$ php vendor/bin/bpr.php brp:configuration:solve --algorithm=la configuration.json
 ```
