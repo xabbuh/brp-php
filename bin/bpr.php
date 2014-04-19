@@ -1,6 +1,10 @@
 #!/usr/bin/env php
 <?php
-require_once __DIR__.'/../vendor/autoload.php';
+foreach (array(__DIR__.'/../vendor/autoload.php', __DIR__.'/../../../autoload.php') as $autoLoadFile) {
+    if (file_exists($autoLoadFile)) {
+        require_once $autoLoadFile;
+    }
+}
 
 use Symfony\Component\Console\Application;
 use Xabbuh\BRP\Command\ShowConfigurationCommand;
