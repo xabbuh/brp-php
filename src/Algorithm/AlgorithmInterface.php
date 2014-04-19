@@ -28,4 +28,16 @@ interface AlgorithmInterface
      * @return \Xabbuh\BRP\Solution\SolutionInterface The solution
      */
     public function solve(ConfigurationInterface $configuration);
+
+    /**
+     * Calculate the subsequent configuration for a block relocation problem and
+     * create the necessary solution step.
+     *
+     * @param ConfigurationInterface $configuration The container configuration
+     *
+     * @return \Xabbuh\BRP\Solution\SolutionStepInterface The solution step or
+     *                                                    null if the problem
+     *                                                    is already solved
+     */
+    public function calculateSubsequentConfiguration(ConfigurationInterface $configuration);
 }

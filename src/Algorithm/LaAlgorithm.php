@@ -13,7 +13,6 @@ namespace Xabbuh\BRP\Algorithm;
 
 use Xabbuh\BRP\Configuration\ConfigurationInterface;
 use Xabbuh\BRP\Solution\Solution;
-use Xabbuh\BRP\Solution\SolutionInterface;
 use Xabbuh\BRP\Solution\SolutionStep;
 
 /**
@@ -31,21 +30,14 @@ class LaAlgorithm implements AlgorithmInterface
         $solution = new Solution();
         $solution->addSolutionStep(new SolutionStep('initial BPR configuration', clone $configuration));
 
-        $targetContainer = $configuration->getLowestContainer();
         $steps = 0;
         $maxSteps = 20;
 
-        while (null !== $targetContainer && !$configuration->isEmpty() && $steps <= $maxSteps) {
-            $stack = $configuration->getStackContainingContainer($targetContainer);
-            $n = $configuration->getTop($stack);
+        while (!$configuration->isEmpty() && $steps <= $maxSteps) {
+            $solutionStep = $this->calculateSubsequentConfiguration($configuration);
 
-            if ($n === $targetContainer) {
-                // immediately retrieve the container if it is the target container
-                $this->retrieveContainer($stack, $configuration, $solution);
-                $targetContainer = $configuration->getLowestContainer();
-            } else {
-                // otherwise relocate it
-                $this->relocateTopContainer($stack, $configuration, $solution);
+            if (null !== $solutionStep) {
+                $solution->addSolutionStep($solutionStep);
             }
 
             $steps++;
@@ -55,19 +47,41 @@ class LaAlgorithm implements AlgorithmInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function calculateSubsequentConfiguration(ConfigurationInterface $configuration)
+    {
+        $targetContainer = $configuration->getLowestContainer();
+
+        if (null === $targetContainer) {
+            return null;
+        }
+
+        $stack = $configuration->getStackContainingContainer($targetContainer);
+        $n = $configuration->getTop($stack);
+
+        if ($n === $targetContainer) {
+            // immediately retrieve the container if it is the target container
+            return $this->retrieveContainer($stack, $configuration);
+        } else {
+            // otherwise relocate it
+            return $this->relocateTopContainer($stack, $configuration);
+        }
+    }
+
+    /**
      * Retrieves the top container from the stack.
      *
      * @param int                    $stack
      * @param ConfigurationInterface $configuration
-     * @param SolutionInterface      $solution
+     *
+     * @return \Xabbuh\BRP\Solution\SolutionStepInterface
      */
-    private function retrieveContainer($stack, ConfigurationInterface $configuration, SolutionInterface $solution)
+    private function retrieveContainer($stack, ConfigurationInterface $configuration)
     {
         $container = $configuration->pop($stack);
-        $solution->addSolutionStep(new SolutionStep(
-            'Retrieve target container '.$container,
-            clone $configuration
-        ));
+
+        return new SolutionStep('Retrieve target container '.$container, clone $configuration);
     }
 
     /**
@@ -75,24 +89,25 @@ class LaAlgorithm implements AlgorithmInterface
      *
      * @param int                    $stack
      * @param ConfigurationInterface $configuration
-     * @param SolutionInterface      $solution
+     *
+     * @return \Xabbuh\BRP\Solution\SolutionStepInterface
      */
-    private function relocateTopContainer($stack, ConfigurationInterface $configuration, SolutionInterface $solution)
+    private function relocateTopContainer($stack, ConfigurationInterface $configuration)
     {
         $otherStacksLowestContainers = $this->getOtherStacksLowestContainers($stack, $configuration);
 
         if (count($otherStacksLowestContainers['all'][0])) {
             $toStack = $otherStacksLowestContainers['all'][0][0];
-            $this->doRelocateContainer($stack, $toStack, $configuration, $solution);
+            return $this->doRelocateContainer($stack, $toStack, $configuration);
         } elseif (count($otherStacksLowestContainers['higher']) === 0) {
             $highestContainer = max(array_keys($otherStacksLowestContainers['all']));
             /** @var int $highestContainerStack */
             $highestContainerStack = $otherStacksLowestContainers['all'][$highestContainer];
-            $this->doRelocateContainer($stack, $highestContainerStack, $configuration, $solution);
+            return $this->doRelocateContainer($stack, $highestContainerStack, $configuration);
         } else {
             $lowestContainer = min(array_keys($otherStacksLowestContainers['higher']));
             $lowestContainerStack = $otherStacksLowestContainers['higher'][$lowestContainer];
-            $this->doRelocateContainer($stack, $lowestContainerStack, $configuration, $solution);
+            return $this->doRelocateContainer($stack, $lowestContainerStack, $configuration);
         }
     }
 
@@ -139,15 +154,17 @@ class LaAlgorithm implements AlgorithmInterface
      * @param int                    $fromStack     Stack to relocate from
      * @param int                    $toStack       Stack to relocate to
      * @param ConfigurationInterface $configuration The container configuration
-     * @param SolutionInterface      $solution      The solution
+     *
+     * @return \Xabbuh\BRP\Solution\SolutionStepInterface
      */
-    private function doRelocateContainer($fromStack, $toStack, ConfigurationInterface $configuration, SolutionInterface $solution)
+    private function doRelocateContainer($fromStack, $toStack, ConfigurationInterface $configuration)
     {
         $container = $configuration->pop($fromStack);
         $configuration->push($toStack, $container);
-        $solution->addSolutionStep(new SolutionStep(
+
+        return new SolutionStep(
             'Relocate container '.$container.' from stack '.$fromStack.' to stack '.$toStack,
             clone $configuration
-        ));
+        );
     }
 }

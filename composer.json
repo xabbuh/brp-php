@@ -18,6 +18,11 @@
             "Xabbuh\\BRP\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Xabbuh\\BRP\\": "tests/"
+        }
+    },
     "bin": ["bin/bpr.php"],
     "extra": {
         "branch-alias": {
