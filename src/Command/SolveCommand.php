@@ -17,7 +17,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Xabbuh\BRP\Algorithm\AlgorithmFactory;
-use Xabbuh\BRP\Algorithm\LaAlgorithm;
 use Xabbuh\BRP\Configuration\Loader\LoaderFactory;
 use Xabbuh\BRP\Solution\Dumper\ConsoleDumper;
 
