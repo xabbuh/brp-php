@@ -67,7 +67,7 @@ class Configuration implements ConfigurationInterface
             }
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -115,6 +115,10 @@ class Configuration implements ConfigurationInterface
      */
     public function getLowestContainer()
     {
+        if ($this->isEmpty()) {
+            throw new \RuntimeException('Unable to retrieve the lowest container of an empty configuration');
+        }
+
         $lowestContainer = null;
 
         for ($stack = 0; $stack < $this->getStackCount(); $stack++) {

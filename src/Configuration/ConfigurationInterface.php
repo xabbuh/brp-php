@@ -101,6 +101,9 @@ interface ConfigurationInterface
      * Returns the lowest container of all stacks.
      *
      * @return int The container
+     *
+     * @throws \RuntimeException when the configuration doesn't contain any
+     *                           containers
      */
     public function getLowestContainer();
 
