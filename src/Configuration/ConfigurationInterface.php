@@ -19,6 +19,22 @@ namespace Xabbuh\BRP\Configuration;
 interface ConfigurationInterface
 {
     /**
+     * Sets the maximum stack height.
+     *
+     * @param int $maxHeight The maximum stack height or -1 for unlimited heights
+     *
+     * @throws \InvalidArgumentException if the maxHeight parameter is invalid
+     */
+    public function setMaxHeight($maxHeight);
+
+    /**
+     * Returns the maximum stack height.
+     *
+     * @return int The maximum stack height
+     */
+    public function getMaxHeight();
+
+    /**
      * Adds a new stack to the configuration.
      *
      * @param int[] $containers Optional containers to add to the stack
@@ -69,6 +85,17 @@ interface ConfigurationInterface
      * @throws \InvalidArgumentException if no stack exists for the given number
      */
     public function isStackEmpty($stack);
+
+    /**
+     * Checks whether a stack is full (i.e. it reached its maximum height).
+     *
+     * @param int $stack The stack to test
+     *
+     * @return bool True, if the stack is full, false otherwise
+     *
+     * @throws \InvalidArgumentException if no stack exists for the given number
+     */
+    public function isStackFull($stack);
 
     /**
      * Returns the top container of the given stack.
@@ -126,6 +153,8 @@ interface ConfigurationInterface
      * @param int $container The container to push
      *
      * @throws \InvalidArgumentException if no stack exists for the given number
+     * @throws \RuntimeException         if the stack already reached its maximum
+     *                                   allowed height
      */
     public function push($stack, $container);
 

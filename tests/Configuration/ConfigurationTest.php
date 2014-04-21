@@ -44,6 +44,43 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @dataProvider emptyConfigurationProvider
+     */
+    public function testSetMaxHeight(ConfigurationTestData $data)
+    {
+        $data->configuration->setMaxHeight(5);
+
+        $this->assertEquals(5, $data->configuration->getMaxHeight());
+    }
+
+    /**
+     * @dataProvider emptyConfigurationProvider
+     */
+    public function testSetMaxHeightWithoutLimit(ConfigurationTestData $data)
+    {
+        $data->configuration->setMaxHeight(-1);
+
+        $this->assertEquals(-1, $data->configuration->getMaxHeight());
+    }
+
+    /**
+     * @dataProvider emptyConfigurationProvider
+     * @expectedException \InvalidArgumentException
+     */
+    public function testSetMaxHeightToZero(ConfigurationTestData $data)
+    {
+        $data->configuration->setMaxHeight(0);
+    }
+
+    /**
+     * @dataProvider allConfigurationsProvider
+     */
+    public function testGetMaxHeightWithoutExplicitlySetMaxHeight(ConfigurationTestData $data)
+    {
+        $this->assertEquals(-1, $data->configuration->getMaxHeight());
+    }
+
+    /**
      * @dataProvider allConfigurationsProvider
      */
     public function testGetStackCount(ConfigurationTestData $data)
@@ -101,6 +138,28 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
                 $this->assertFalse($configuration->isStackEmpty($stack));
             }
         }
+    }
+
+    /**
+     * @dataProvider allConfigurationsProvider
+     */
+    public function testIsStackFull(ConfigurationTestData $data)
+    {
+        $configuration = $data->configuration;
+
+        for ($stack = 0; $stack < $configuration->getStackCount(); $stack++) {
+            $this->assertFalse($configuration->isStackFull($stack));
+        }
+    }
+
+    /**
+     * @dataProvider heightLimitedConfigurationProvider
+     */
+    public function testIsStackFullWithHeightLimitedConfiguration(ConfigurationTestData $data)
+    {
+        $this->assertTrue($data->configuration->isStackFull(0));
+        $this->assertFalse($data->configuration->isStackFull(1));
+        $this->assertFalse($data->configuration->isStackFull(2));
     }
 
     /**
@@ -223,6 +282,31 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @dataProvider heightLimitedConfigurationProvider
+     */
+    public function testPushOnHeightLimitedStack(ConfigurationTestData $data)
+    {
+        $configuration = $data->configuration;
+
+        for ($stack = 0; $stack < $configuration->getStackCount(); $stack++) {
+            if (!$configuration->isStackFull($stack)) {
+                $configuration->push($stack, 50);
+                $this->assertEquals($data->stackHeights[$stack] + 1, $configuration->getHeight($stack));
+                $this->assertEquals(50, $configuration->getTop($stack));
+            }
+        }
+    }
+
+    /**
+     * @dataProvider heightLimitedConfigurationProvider
+     * @expectedException \RuntimeException
+     */
+    public function testPushOnFullStack(ConfigurationTestData $data)
+    {
+        $data->configuration->push(0, 50);
+    }
+
+    /**
      * @dataProvider allConfigurationsProvider
      */
     public function testPop(ConfigurationTestData $data)
@@ -312,6 +396,11 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         return array(array($this->createConfigurationWithEmptyStack()));
     }
 
+    public function heightLimitedConfigurationProvider()
+    {
+        return array(array($this->createHeightLimitedConfiguration()));
+    }
+
     public function createConfiguration()
     {
         $configuration = new Configuration();
@@ -364,6 +453,14 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $testData->stackContainingThree = null;
 
         return $testData;
+    }
+
+    public function createHeightLimitedConfiguration()
+    {
+        $data = $this->createConfiguration();
+        $data->configuration->setMaxHeight(4);
+
+        return $data;
     }
 }
 

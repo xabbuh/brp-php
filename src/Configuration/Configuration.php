@@ -20,6 +20,11 @@ class Configuration implements ConfigurationInterface
 {
     private $stacks = array();
 
+    /**
+     * @var int Maximum stack height (stacks are not limited by default)
+     */
+    private $maxHeight = -1;
+
     private $containers = array();
 
     private $containersCount = 0;
@@ -41,6 +46,26 @@ class Configuration implements ConfigurationInterface
         foreach ($containers as $container) {
             $this->push($index, $container);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setMaxHeight($maxHeight)
+    {
+        if (-1 !== $maxHeight && $maxHeight < 1) {
+            throw new \InvalidArgumentException('Maximum height must be positive or -1');
+        }
+
+        $this->maxHeight = $maxHeight;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getMaxHeight()
+    {
+        return $this->maxHeight;
     }
 
     /**
@@ -85,6 +110,20 @@ class Configuration implements ConfigurationInterface
         $this->checkStackExists($stack);
 
         return $this->getHeight($stack) === 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isStackFull($stack)
+    {
+        $this->checkStackExists($stack);
+
+        if (-1 === $this->maxHeight) {
+            return false;
+        }
+
+        return $this->getHeight($stack) >= $this->maxHeight;
     }
 
     /**
@@ -145,6 +184,10 @@ class Configuration implements ConfigurationInterface
     public function push($stack, $container)
     {
         $this->checkStackExists($stack);
+
+        if ($this->isStackFull($stack)) {
+            throw new \RuntimeException('Cannot push onto a full stack');
+        }
 
         $this->stacks[$stack][] = $container;
         $this->containers[$container] = $stack;
