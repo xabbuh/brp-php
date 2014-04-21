@@ -41,7 +41,7 @@ class ConsoleDumper implements DumperInterface
 
         for ($step = 0; $step < count($solution); $step++) {
             $this->output->writeln('');
-            $this->output->writeln($solution->getSolutionStep($step)->getDescription());
+            $this->output->writeln($solution->getSolutionStep($step)->getDescription().':');
             $this->output->writeln('');
             $dumper->dump($solution->getSolutionStep($step)->getConfiguration());
         }

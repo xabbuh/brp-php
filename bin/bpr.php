@@ -7,6 +7,7 @@ foreach (array(__DIR__.'/../vendor/autoload.php', __DIR__.'/../../../autoload.ph
 }
 
 use Symfony\Component\Console\Application;
+use Xabbuh\BRP\Command\LanSolveCommand;
 use Xabbuh\BRP\Command\ShowConfigurationCommand;
 use Xabbuh\BRP\Command\SolveCommand;
 
@@ -14,5 +15,6 @@ $application = new Application();
 $application->addCommands(array(
     new ShowConfigurationCommand(),
     new SolveCommand(),
+    new LanSolveCommand(),
 ));
 $application->run();
