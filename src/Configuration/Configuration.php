@@ -20,6 +20,10 @@ class Configuration implements ConfigurationInterface
 {
     private $stacks = array();
 
+    private $containers = array();
+
+    private $containersCount = 0;
+
     /**
      * {@inheritDoc}
      */
@@ -31,7 +35,12 @@ class Configuration implements ConfigurationInterface
             }
         }
 
-        $this->stacks[] = $containers;
+        $index = count($this->stacks);
+        $this->stacks[$index] = array();
+
+        foreach ($containers as $container) {
+            $this->push($index, $container);
+        }
     }
 
     /**
@@ -47,13 +56,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getContainersCount()
     {
-        $containersCount = 0;
-
-        for ($stack = 0; $stack < $this->getStackCount(); $stack++) {
-            $containersCount += $this->getHeight($stack);
-        }
-
-        return $containersCount;
+        return $this->containersCount;
     }
 
     /**
@@ -61,13 +64,7 @@ class Configuration implements ConfigurationInterface
      */
     public function isEmpty()
     {
-        for ($stack = 0; $stack < $this->getStackCount(); $stack++) {
-            if (!$this->isStackEmpty($stack)) {
-                return false;
-            }
-        }
-
-        return true;
+        return 0 === $this->containersCount;
     }
 
     /**
@@ -119,21 +116,17 @@ class Configuration implements ConfigurationInterface
             throw new \RuntimeException('Unable to retrieve the lowest container of an empty configuration');
         }
 
-        $lowestContainer = null;
+        $lowestContainers = array();
 
         for ($stack = 0; $stack < $this->getStackCount(); $stack++) {
             if ($this->isStackEmpty($stack)) {
                 continue;
             }
 
-            $lowestContainerInStack = $this->getLowestContainerInStack($stack);
-
-            if (null === $lowestContainer || $lowestContainerInStack < $lowestContainer) {
-                $lowestContainer = $lowestContainerInStack;
-            }
+            $lowestContainers[] = $this->getLowestContainerInStack($stack);
         }
 
-        return $lowestContainer;
+        return min($lowestContainers);
     }
 
     /**
@@ -143,15 +136,7 @@ class Configuration implements ConfigurationInterface
     {
         $this->checkStackNotEmpty($stack);
 
-        $lowestContainer = $this->getContainer($stack, 0);
-
-        for ($container = 1; $container < $this->getHeight($stack); $container++) {
-            if ($this->getContainer($stack, $container) < $lowestContainer) {
-                $lowestContainer = $this->getContainer($stack, $container);
-            }
-        }
-
-        return $lowestContainer;
+        return min($this->stacks[$stack]);
     }
 
     /**
@@ -162,6 +147,8 @@ class Configuration implements ConfigurationInterface
         $this->checkStackExists($stack);
 
         $this->stacks[$stack][] = $container;
+        $this->containers[$container] = $stack;
+        $this->containersCount++;
     }
 
     /**
@@ -171,7 +158,11 @@ class Configuration implements ConfigurationInterface
     {
         $this->checkStackNotEmpty($stack);
 
-        return array_pop($this->stacks[$stack]);
+        $topContainer = array_pop($this->stacks[$stack]);
+        unset($this->containers[$topContainer]);
+        $this->containersCount--;
+
+        return $topContainer;
     }
 
     /**
@@ -179,13 +170,11 @@ class Configuration implements ConfigurationInterface
      */
     public function getStackContainingContainer($container)
     {
-        for ($stack = 0; $stack < $this->getStackCount(); $stack++) {
-            if ($this->stackContainsContainer($stack, $container)) {
-                return $stack;
-            }
+        if (!isset($this->containers[$container])) {
+            throw new \RuntimeException('Stacks do not contain container '.$container);
         }
 
-        throw new \RuntimeException('Stacks do not contain container '.$container);
+        return $this->containers[$container];
     }
 
     /**
@@ -195,13 +184,7 @@ class Configuration implements ConfigurationInterface
     {
         $this->checkStackExists($stack);
 
-        for ($i = 0; $i < $this->getHeight($stack); $i++) {
-            if ($this->getContainer($stack, $i) === $container) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($container, $this->stacks[$stack]);
     }
 
     private function checkStackExists($stack)
