@@ -28,6 +28,10 @@ class JsonFileLoader implements LoaderInterface
         $configuration = new Configuration();
         $jsonConfiguration = json_decode(file_get_contents($resource));
 
+        if (isset($jsonConfiguration->maxHeight)) {
+            $configuration->setMaxHeight($jsonConfiguration->maxHeight);
+        }
+
         foreach ($jsonConfiguration->stacks as $stack) {
             $configuration->addStack($stack);
         }

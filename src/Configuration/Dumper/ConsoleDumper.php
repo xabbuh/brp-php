@@ -57,7 +57,12 @@ class ConsoleDumper implements DumperInterface
             $this->output->write(' '.$stack);
         }
 
-        $this->output->writeln(' ');
+        $this->output->writeln('');
+
+        if ($configuration->getMaxHeight() > 0) {
+            $this->output->writeln('');
+            $this->output->writeln('Max stack height: '.$configuration->getMaxHeight());
+        }
     }
 
     /**
