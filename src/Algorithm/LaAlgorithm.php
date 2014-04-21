@@ -30,17 +30,12 @@ class LaAlgorithm implements AlgorithmInterface
         $solution = new Solution();
         $solution->addSolutionStep(new SolutionStep('initial BPR configuration', clone $configuration));
 
-        $steps = 0;
-        $maxSteps = 20;
-
-        while (!$configuration->isEmpty() && $steps <= $maxSteps) {
+        while (!$configuration->isEmpty()) {
             $solutionStep = $this->calculateSubsequentConfiguration($configuration);
 
             if (null !== $solutionStep) {
                 $solution->addSolutionStep($solutionStep);
             }
-
-            $steps++;
         }
 
         return $solution;
