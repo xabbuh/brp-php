@@ -188,6 +188,14 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider allConfigurationsProvider
      */
+    public function testGetContainers(ConfigurationTestData $data)
+    {
+        $this->assertEquals($data->containers, $data->configuration->getContainers());
+    }
+
+    /**
+     * @dataProvider allConfigurationsProvider
+     */
     public function testGetContainer(ConfigurationTestData $data)
     {
         $configuration = $data->configuration;
@@ -412,6 +420,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $testData->configuration = $configuration;
         $testData->isEmpty = false;
         $testData->stackHeights = array(4, 2, 3);
+        $testData->containers = array(6, 7, 9, 4, 1, 3, 2, 8, 5);
         $testData->topContainers = array(4, 3, 5);
         $testData->bottomContainers = array(6, 1, 2);
         $testData->lowestContainers = array(4, 1, 2);
@@ -428,6 +437,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $testData->configuration = $configuration;
         $testData->isEmpty = true;
         $testData->stackHeights = array();
+        $testData->containers = array();
         $testData->topContainers = array();
         $testData->bottomContainers = array();
         $testData->lowestContainers = array();
@@ -447,6 +457,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $testData->configuration = $configuration;
         $testData->isEmpty = false;
         $testData->stackHeights = array(4, 2, 0);
+        $testData->containers = array(6, 7, 9, 4, 5, 8);
         $testData->topContainers = array(4, 8, null);
         $testData->bottomContainers = array(6, 5, null);
         $testData->lowestContainers = array(4, 5, null);
@@ -480,6 +491,11 @@ class ConfigurationTestData
      * @var int[]
      */
     public $stackHeights;
+
+    /**
+     * @var int[]
+     */
+    public $containers;
 
     /**
      * @var int[]

@@ -110,6 +110,13 @@ interface ConfigurationInterface
     public function getTop($stack);
 
     /**
+     * Returns all containers.
+     *
+     * @return int[] The containers
+     */
+    public function getContainers();
+
+    /**
      * Returns the top container of the given stack.
      *
      * @param int $stack The number of the stack to return the container from

@@ -139,6 +139,20 @@ class Configuration implements ConfigurationInterface
     /**
      * {@inheritDoc}
      */
+    public function getContainers()
+    {
+        $containers = array();
+
+        for ($stack = 0; $stack < $this->getStackCount(); $stack++) {
+            $containers = array_merge($containers, $this->stacks[$stack]);
+        }
+
+        return $containers;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getContainer($stack, $index)
     {
         $this->checkStackNotEmpty($stack);
