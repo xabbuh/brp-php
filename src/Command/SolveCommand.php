@@ -31,7 +31,7 @@ class SolveCommand extends Command
             ->setName('brp:configuration:solve')
             ->setDescription('Solves a block relocation problem and dumps the solution')
             ->addOption('algorithm', 'a', InputOption::VALUE_REQUIRED, 'Name of the algorithm to use')
-            ->addArgument('file', InputArgument::REQUIRED, 'The file containing the bpr configuration');
+            ->addArgument('file', InputArgument::REQUIRED, 'The file containing the brp configuration');
     }
 
     /**

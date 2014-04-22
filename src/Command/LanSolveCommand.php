@@ -36,7 +36,7 @@ class LanSolveCommand extends Command
             ->setName('brp:configuration:lan-solve')
             ->setDescription('Solves a block relocation problem using the LA-N algorithm and dumps the solution')
             ->addOption('look-ahead', null, InputOption::VALUE_REQUIRED, 'Number of steps to look ahead')
-            ->addArgument('file', InputArgument::REQUIRED, 'The file containing the bpr configuration');
+            ->addArgument('file', InputArgument::REQUIRED, 'The file containing the brp configuration');
     }
 
     /**

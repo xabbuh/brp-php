@@ -23,7 +23,7 @@
             "Xabbuh\\BRP\\": "tests/"
         }
     },
-    "bin": ["bin/bpr.php"],
+    "bin": ["bin/brp.php"],
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"
