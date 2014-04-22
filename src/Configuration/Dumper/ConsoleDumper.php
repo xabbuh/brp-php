@@ -11,6 +11,7 @@
 
 namespace Xabbuh\BRP\Configuration\Dumper;
 
+use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Xabbuh\BRP\Configuration\ConfigurationInterface;
 
@@ -33,36 +34,44 @@ class ConsoleDumper implements DumperInterface
      */
     public function dump(ConfigurationInterface $configuration)
     {
+        $tableHelper = $this->getTableHelper();
         $maxHeight = $this->getHighestStackHeight($configuration);
 
-        for ($i = $maxHeight - 1; $i >= 0; $i--) {
-            $this->output->write(' ');
+        $tableHelper->setHeaders(range(0, $configuration->getStackCount() - 1));
 
-            for ($stack = 0; $stack < $configuration->getStackCount(); $stack++) {
-                if ($configuration->getHeight($stack) > $i) {
-                    $this->output->write($configuration->getContainer($stack, $i));
-                } else {
-                    $this->output->write(' ');
-                }
-
-                $this->output->write(' ');
-            }
-
-            $this->output->writeln('');
+        for ($level = $maxHeight - 1; $level >= 0; $level--) {
+            $tableHelper->addRow($this->createTableRow($configuration, $level));
         }
 
-        $this->output->writeln(str_repeat('-', $configuration->getStackCount() * 2 + 1));
-
-        for ($stack = 0; $stack < $configuration->getStackCount(); $stack++) {
-            $this->output->write(' '.$stack);
-        }
-
-        $this->output->writeln('');
+        $tableHelper->render($this->output);
 
         if ($configuration->getMaxHeight() > 0) {
             $this->output->writeln('');
             $this->output->writeln('Max stack height: '.$configuration->getMaxHeight());
         }
+    }
+
+    /**
+     * Creates a table row showing a certain level of all stacks.
+     *
+     * @param ConfigurationInterface $configuration The container configuration
+     * @param int                    $row           The row to produce
+     *
+     * @return array The table row
+     */
+    private function createTableRow(ConfigurationInterface $configuration, $row)
+    {
+        $tableRow = array();
+
+        for ($stack = 0; $stack < $configuration->getStackCount(); $stack++) {
+            if ($row < $configuration->getHeight($stack)) {
+                $tableRow[] = $configuration->getContainer($stack, $row);
+            } else {
+                $tableRow[] = '';
+            }
+        }
+
+        return $tableRow;
     }
 
     /**
@@ -83,5 +92,19 @@ class ConsoleDumper implements DumperInterface
         }
 
         return $maxHeight;
+    }
+
+    /**
+     * Initializes the table helper.
+     *
+     * @return TableHelper The table helper
+     */
+    private function getTableHelper()
+    {
+        $tableHelper = new TableHelper();
+        $tableHelper->setLayout(TableHelper::LAYOUT_COMPACT);
+        $tableHelper->setPadType(STR_PAD_LEFT);
+
+        return $tableHelper;
     }
 }
