@@ -188,25 +188,17 @@ class LanAlgorithm extends BaseAlgorithm
 
             return $stacks[0];
         } else {
-            $lowestContainer = $configuration->getLowestContainerInStack($d[0]);
+            $lowestStackContainers = array_filter($lowestStackContainers, function ($value) use ($container) {
+                return null === $value || $value > $container;
+            });
+            asort($lowestStackContainers);
+            $stacks = array_keys($lowestStackContainers);
 
-            foreach ($d as $stack) {
-                if ($stack === $stackContainingN) {
-                    continue;
-                }
-
-                if ($configuration->isStackFull($stack)) {
-                    continue;
-                }
-
-                $container = $configuration->getLowestContainerInStack($stack);
-
-                if ($container < $lowestContainer) {
-                    $lowestContainer = $container;
-                }
+            if (null === $lowestStackContainers[reset($stacks)]) {
+                return reset($stacks);
             }
 
-            return $configuration->getStackContainingContainer($lowestContainer);
+            return $stacks[0];
         }
     }
 
@@ -251,7 +243,7 @@ class LanAlgorithm extends BaseAlgorithm
     }
 
     /**
-     * Returns the stack where the lowest container is smaller than a given container.
+     * Returns the stack where the lowest container is greater than a given container.
      *
      * @param ConfigurationInterface $configuration The container configuration
      * @param int                    $n             The container to compare with
@@ -268,7 +260,10 @@ class LanAlgorithm extends BaseAlgorithm
                 continue;
             }
 
-            if ($configuration->isStackEmpty($stack) || $configuration->isStackFull($stack)) {
+            if ($configuration->isStackFull($stack)) {
+                continue;
+            } elseif ($configuration->isStackEmpty($stack)) {
+                $lowestContainersStacks[] = $stack;
                 continue;
             }
 

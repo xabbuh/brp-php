@@ -22,15 +22,17 @@ class LanAlgorithmTest extends \PHPUnit_Framework_TestCase
     /**
      * @var LanAlgorithm
      */
+    private $la2Algorithm;
+
+    /**
+     * @var LanAlgorithm
+     */
     private $la5Algorithm;
 
     protected function setUp()
     {
+        $this->la2Algorithm = new LanAlgorithm(2);
         $this->la5Algorithm = new LanAlgorithm(5);
-
-        if ('testRelocate' !== $this->getName()) {
-//            $this->markTestSkipped();
-        }
     }
 
     public function testSolve()
@@ -58,24 +60,6 @@ class LanAlgorithmTest extends \PHPUnit_Framework_TestCase
                 array(6, 7, 9, 5),
                 array(),
                 array(8),
-            )),
-            $this->processConfiguration($this->la5Algorithm, $configuration)
-        );
-    }
-
-    public function testRelocate()
-    {
-        $configuration = $this->createConfiguration(5, array(
-            array(6, 7, 9, 5),
-            array(1, 3, 4),
-            array(2, 8),
-        ));
-
-        $this->assertEquals(
-            $this->createConfiguration(5, array(
-                array(6, 7, 9, 5, 4),
-                array(1, 3),
-                array(2, 8),
             )),
             $this->processConfiguration($this->la5Algorithm, $configuration)
         );
@@ -153,6 +137,24 @@ class LanAlgorithmTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testRelocateHighestTopOntoEmptyStack()
+    {
+        $configuration = $this->createConfiguration(4, array(
+            array(6, 3, 1, 4),
+            array(2, 5, 7, 8),
+            array(),
+        ));
+
+        $this->assertEquals(
+            $this->createConfiguration(4, array(
+                array(6, 3, 1, 4),
+                array(2, 5, 7),
+                array(8),
+            )),
+            $this->processConfiguration($this->la2Algorithm, $configuration)
+        );
+    }
+
     private function processConfiguration(LanAlgorithm $algorithm, ConfigurationInterface $configuration)
     {
         return $algorithm
@@ -168,20 +170,6 @@ class LanAlgorithmTest extends \PHPUnit_Framework_TestCase
         foreach ($stacks as $stack) {
             $configuration->addStack($stack);
         }
-
-        return $configuration;
-    }
-
-    private function createConfigurationWithHeightLimit()
-    {
-        $configuration = new Configuration();
-        $configuration->addStack(array(4, 7, 5, 9));
-        $configuration->addStack(array(12, 14, 10, 13));
-        $configuration->addStack(array(11, 6, 8));
-        $configuration->addStack(array(1, 3));
-        $configuration->addStack(array(15));
-        $configuration->addStack(array(2, 17));
-        $configuration->addStack(array(16));
 
         return $configuration;
     }
