@@ -1,6 +1,6 @@
 {
     "name": "xabbuh/block-relocation-problem",
-    "description": "",
+    "description": "Algorithms for solving block relocation problems",
     "homepage": "https://github.com/xabbuh/brp-php",
     "license": "MIT",
     "authors": [
