@@ -9,21 +9,21 @@
  * file that was distributed with this source code.
  */
 
-namespace Xabbuh\BRP\Configuration\Dumper;
+namespace Xabbuh\BRP\Configuration\Format;
 
 use Xabbuh\BRP\Configuration\ConfigurationInterface;
 
 /**
- * Dumper interface.
+ * Format interface.
  *
  * @author Christian Flothmann <christian.flothmann@xabbuh.de>
  */
-interface DumperInterface
+interface FormatInterface
 {
     /**
-     * Dumps the given configuration.
+     * Formats the given configuration.
      *
-     * @param ConfigurationInterface $configuration The configuration to dump
+     * @param ConfigurationInterface $configuration The configuration to format
      */
-    public function dump(ConfigurationInterface $configuration);
+    public function format(ConfigurationInterface $configuration);
 }
