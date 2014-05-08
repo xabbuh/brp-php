@@ -18,7 +18,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Xabbuh\BRP\Algorithm\LanAlgorithm;
 use Xabbuh\BRP\Configuration\Loader\LoaderFactory;
-use Xabbuh\BRP\Solution\Dumper\ConsoleDumper;
+use Xabbuh\BRP\Solution\Writer\ConsoleWriter;
 
 /**
  * Command to solve a block relocation problem using the LA-N algorithm.
@@ -71,7 +71,7 @@ class LanSolveCommand extends Command
 
         $algorithm = new LanAlgorithm($lookAhead);
         $solution = $algorithm->solve($loader->load($resource));
-        $dumper = new ConsoleDumper($output);
-        $dumper->dump($solution);
+        $writer = new ConsoleWriter($output);
+        $writer->write($solution);
     }
 }

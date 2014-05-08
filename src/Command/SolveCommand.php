@@ -18,7 +18,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Xabbuh\BRP\Algorithm\AlgorithmFactory;
 use Xabbuh\BRP\Configuration\Loader\LoaderFactory;
-use Xabbuh\BRP\Solution\Dumper\ConsoleDumper;
+use Xabbuh\BRP\Solution\Writer\ConsoleWriter;
 
 class SolveCommand extends Command
 {
@@ -74,7 +74,7 @@ class SolveCommand extends Command
         }
 
         $solution = $algorithm->solve($loader->load($resource));
-        $dumper = new ConsoleDumper($output);
-        $dumper->dump($solution);
+        $writer = new ConsoleWriter($output);
+        $writer->write($solution);
     }
 }

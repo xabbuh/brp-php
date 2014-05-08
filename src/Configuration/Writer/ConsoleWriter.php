@@ -9,19 +9,22 @@
  * file that was distributed with this source code.
  */
 
-namespace Xabbuh\BRP\Configuration\Dumper;
+namespace Xabbuh\BRP\Configuration\Writer;
 
 use Symfony\Component\Console\Helper\TableHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Xabbuh\BRP\Configuration\ConfigurationInterface;
 
 /**
- * Dump a configuration to a given output stream.
+ * Write a configuration to a given output stream.
  *
  * @author Christian Flothmann <christian.flothmann@xabbuh.de>
  */
-class ConsoleDumper implements DumperInterface
+class ConsoleWriter implements WriterInterface
 {
+    /**
+     * @var OutputInterface
+     */
     protected $output;
 
     public function __construct(OutputInterface $output)
@@ -32,7 +35,7 @@ class ConsoleDumper implements DumperInterface
     /**
      * {@inheritDoc}
      */
-    public function dump(ConfigurationInterface $configuration)
+    public function write(ConfigurationInterface $configuration)
     {
         $tableHelper = $this->getTableHelper();
         $maxHeight = $this->getHighestStackHeight($configuration);

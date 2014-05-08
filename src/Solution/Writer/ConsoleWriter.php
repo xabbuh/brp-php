@@ -9,18 +9,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Xabbuh\BRP\Solution\Dumper;
+namespace Xabbuh\BRP\Solution\Writer;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use Xabbuh\BRP\Configuration\Dumper\ConsoleDumper as ConfigurationDumper;
+use Xabbuh\BRP\Configuration\Writer\ConsoleWriter as ConfigurationWriter;
 use Xabbuh\BRP\Solution\SolutionInterface;
 
 /**
- * Dump a configuration to a given output stream.
+ * Write a configuration to a given output stream.
  *
  * @author Christian Flothmann <christian.flothmann@xabbuh.de>
  */
-class ConsoleDumper implements DumperInterface
+class ConsoleWriter implements WriterInterface
 {
     /**
      * @var OutputInterface
@@ -35,15 +35,15 @@ class ConsoleDumper implements DumperInterface
     /**
      * {@inheritDoc}
      */
-    public function dump(SolutionInterface $solution)
+    public function write(SolutionInterface $solution)
     {
-        $dumper = new ConfigurationDumper($this->output);
+        $writer = new ConfigurationWriter($this->output);
 
         for ($step = 0; $step < count($solution); $step++) {
             $this->output->writeln('');
             $this->output->writeln($solution->getSolutionStep($step)->getDescription().':');
             $this->output->writeln('');
-            $dumper->dump($solution->getSolutionStep($step)->getConfiguration());
+            $writer->write($solution->getSolutionStep($step)->getConfiguration());
         }
 
         $this->output->writeln('');

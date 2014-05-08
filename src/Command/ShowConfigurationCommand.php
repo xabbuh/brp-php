@@ -15,7 +15,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Xabbuh\BRP\Configuration\Dumper\ConsoleDumper;
+use Xabbuh\BRP\Configuration\Writer\ConsoleWriter;
 use Xabbuh\BRP\Configuration\Loader\LoaderFactory;
 
 /**
@@ -58,7 +58,7 @@ class ShowConfigurationCommand extends Command
             return;
         }
 
-        $dumper = new ConsoleDumper($output);
-        $dumper->dump($loader->load($resource));
+        $writer = new ConsoleWriter($output);
+        $writer->write($loader->load($resource));
     }
 }

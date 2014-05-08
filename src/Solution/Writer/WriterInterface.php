@@ -9,21 +9,21 @@
  * file that was distributed with this source code.
  */
 
-namespace Xabbuh\BRP\Solution\Dumper;
+namespace Xabbuh\BRP\Solution\Writer;
 
 use Xabbuh\BRP\Solution\SolutionInterface;
 
 /**
- * Dumper interface.
+ * Writer interface.
  *
  * @author Christian Flothmann <christian.flothmann@xabbuh.de>
  */
-interface DumperInterface
+interface WriterInterface
 {
     /**
-     * Dumps the given solution.
+     * Writes the given solution.
      *
-     * @param SolutionInterface $solution The solution to dump
+     * @param SolutionInterface $solution The solution to write
      */
-    public function dump(SolutionInterface $solution);
+    public function write(SolutionInterface $solution);
 }
