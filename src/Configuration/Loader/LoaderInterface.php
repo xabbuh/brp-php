@@ -19,23 +19,12 @@ namespace Xabbuh\BRP\Configuration\Loader;
 interface LoaderInterface
 {
     /**
-     * Loads a {@link \Xabbuh\BRP\Configuration\ConfigurationInterface configuration}.
-     *
-     * @param string $resource Resource to load the configuration from
+     * Loads a {@link \Xabbuh\BRP\Configuration\ConfigurationInterface configuration}
+     * from a loader specific resource.
      *
      * @return \Xabbuh\BRP\Configuration\ConfigurationInterface The loaded configuration
      *
      * @throws \RuntimeException when the resource cannot be parsed
      */
-    public function load($resource);
-
-    /**
-     * Checks whether or not the loader is able to load a configuration from
-     * the given resource.
-     *
-     * @param string $resource Resource to load
-     *
-     * @return bool True, if the loader support the given resource type, false otherwise
-     */
-    public function supports($resource);
+    public function load();
 }

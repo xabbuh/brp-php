@@ -17,7 +17,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Xabbuh\BRP\Algorithm\LanAlgorithm;
+use Xabbuh\BRP\Configuration\Loader\FileLoader;
 use Xabbuh\BRP\Configuration\Loader\LoaderFactory;
+use Xabbuh\BRP\Configuration\Parser\JsonParser;
 use Xabbuh\BRP\Solution\Writer\ConsoleWriter;
 
 /**
@@ -60,8 +62,7 @@ class LanSolveCommand extends Command
             return;
         }
 
-        $loaderFactory = new LoaderFactory();
-        $loader = $loaderFactory->getLoader($resource);
+        $loader = new FileLoader(new JsonParser(), $resource);
 
         if (null === $loader) {
             $output->writeln('No loader found for resource '.$resource);

@@ -15,8 +15,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Xabbuh\BRP\Configuration\Loader\FileLoader;
+use Xabbuh\BRP\Configuration\Parser\JsonParser;
 use Xabbuh\BRP\Configuration\Writer\ConsoleWriter;
-use Xabbuh\BRP\Configuration\Loader\LoaderFactory;
 
 /**
  * Command to show BRP configurations on the console.
@@ -49,16 +50,8 @@ class ShowConfigurationCommand extends Command
             return;
         }
 
-        $loaderFactory = new LoaderFactory();
-        $loader = $loaderFactory->getLoader($resource);
-
-        if (null === $loader) {
-            $output->writeln('No loader found for resource '.$resource);
-
-            return;
-        }
-
+        $loader = new FileLoader(new JsonParser(), $resource);
         $writer = new ConsoleWriter($output);
-        $writer->write($loader->load($resource));
+        $writer->write($loader->load());
     }
 }

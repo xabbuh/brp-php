@@ -9,24 +9,24 @@
  * file that was distributed with this source code.
  */
 
-namespace Xabbuh\BRP\Configuration\Loader;
+namespace Xabbuh\BRP\Configuration\Parser;
 
 use Xabbuh\BRP\Configuration\Configuration;
 
 /**
- * Loader implementation for JSON files.
+ * JSON encoded container configurations parser.
  *
  * @author Christian Flothmann <christian.flothmann@xabbuh.de>
  */
-class JsonFileLoader implements LoaderInterface
+class JsonParser implements ParserInterface
 {
     /**
      * {@inheritDoc}
      */
-    public function load($resource)
+    public function parse($formattedConfiguration)
     {
         $configuration = new Configuration();
-        $jsonConfiguration = json_decode(file_get_contents($resource));
+        $jsonConfiguration = json_decode($formattedConfiguration);
 
         if (isset($jsonConfiguration->maxHeight)) {
             $configuration->setMaxHeight($jsonConfiguration->maxHeight);
@@ -37,13 +37,5 @@ class JsonFileLoader implements LoaderInterface
         }
 
         return $configuration;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function supports($resource)
-    {
-        return '.json' === substr($resource, -5);
     }
 }
