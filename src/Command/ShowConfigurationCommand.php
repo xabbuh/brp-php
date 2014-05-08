@@ -15,6 +15,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Xabbuh\BRP\Configuration\Format\TableFormat;
 use Xabbuh\BRP\Configuration\Loader\FileLoader;
 use Xabbuh\BRP\Configuration\Parser\JsonParser;
 use Xabbuh\BRP\Configuration\Writer\ConsoleWriter;
@@ -51,7 +52,7 @@ class ShowConfigurationCommand extends Command
         }
 
         $loader = new FileLoader(new JsonParser(), $resource);
-        $writer = new ConsoleWriter($output);
+        $writer = new ConsoleWriter($output, new TableFormat());
         $writer->write($loader->load());
     }
 }

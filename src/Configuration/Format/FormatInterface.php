@@ -24,6 +24,8 @@ interface FormatInterface
      * Formats the given configuration.
      *
      * @param ConfigurationInterface $configuration The configuration to format
+     *
+     * @return mixed The format created by the format instance
      */
     public function format(ConfigurationInterface $configuration);
 }

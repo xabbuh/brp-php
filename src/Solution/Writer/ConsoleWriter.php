@@ -12,6 +12,7 @@
 namespace Xabbuh\BRP\Solution\Writer;
 
 use Symfony\Component\Console\Output\OutputInterface;
+use Xabbuh\BRP\Configuration\Format\TableFormat;
 use Xabbuh\BRP\Configuration\Writer\ConsoleWriter as ConfigurationWriter;
 use Xabbuh\BRP\Solution\SolutionInterface;
 
@@ -37,7 +38,7 @@ class ConsoleWriter implements WriterInterface
      */
     public function write(SolutionInterface $solution)
     {
-        $writer = new ConfigurationWriter($this->output);
+        $writer = new ConfigurationWriter($this->output, new TableFormat());
 
         for ($step = 0; $step < count($solution); $step++) {
             $this->output->writeln('');
