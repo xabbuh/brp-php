@@ -23,42 +23,29 @@ use Xabbuh\BRP\Configuration\ConfigurationInterface;
 class TableFormat implements FormatInterface
 {
     /**
-     * @var BufferedOutput
-     */
-    private $output;
-
-    /**
-     * @var \Symfony\Component\Console\Helper\TableHelper
-     */
-    private $tableHelper;
-
-    public function __construct()
-    {
-        $this->output = new BufferedOutput();
-        $this->tableHelper = $this->createTableHelper();
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function format(ConfigurationInterface $configuration)
     {
+        $output = new BufferedOutput();
+        $tableHelper = $this->createTableHelper();
+
         $maxHeight = $this->getHighestStackHeight($configuration);
 
-        $this->tableHelper->setHeaders(range(0, $configuration->getStackCount() - 1));
+        $tableHelper->setHeaders(range(0, $configuration->getStackCount() - 1));
 
         for ($level = $maxHeight - 1; $level >= 0; $level--) {
-            $this->tableHelper->addRow($this->createTableRow($configuration, $level));
+            $tableHelper->addRow($this->createTableRow($configuration, $level));
         }
 
-        $this->tableHelper->render($this->output);
+        $tableHelper->render($output);
 
         if ($configuration->getMaxHeight() > 0) {
-            $this->output->writeln('');
-            $this->output->writeln('Max stack height: '.$configuration->getMaxHeight());
+            $output->writeln('');
+            $output->writeln('Max stack height: '.$configuration->getMaxHeight());
         }
 
-        return $this->output->fetch();
+        return $output->fetch();
     }
 
     /**
