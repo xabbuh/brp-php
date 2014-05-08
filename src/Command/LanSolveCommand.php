@@ -63,15 +63,8 @@ class LanSolveCommand extends Command
         }
 
         $loader = new FileLoader(new JsonParser(), $resource);
-
-        if (null === $loader) {
-            $output->writeln('No loader found for resource '.$resource);
-
-            return;
-        }
-
         $algorithm = new LanAlgorithm($lookAhead);
-        $solution = $algorithm->solve($loader->load($resource));
+        $solution = $algorithm->solve($loader->load());
         $writer = new ConsoleWriter($output);
         $writer->write($solution);
     }
