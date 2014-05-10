@@ -20,29 +20,25 @@ use Xabbuh\BRP\Configuration\Format\FormatInterface;
  *
  * @author Christian Flothmann <christian.flothmann@xabbuh.de>
  */
-class ConsoleWriter implements WriterInterface
+class ConsoleWriter extends AbstractWriter
 {
     /**
      * @var OutputInterface
      */
-    protected $output;
+    private $output;
 
-    /**
-     * @var FormatInterface
-     */
-    protected $format;
-
-    public function __construct(OutputInterface $output, FormatInterface $format)
+    public function __construct(FormatInterface $format, OutputInterface $output)
     {
+        parent::__construct($format);
+
         $this->output = $output;
-        $this->format = $format;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function write(ConfigurationInterface $configuration)
+    protected function doFormattedWrite($formattedConfiguration)
     {
-        $this->output->writeln($this->format->format($configuration));
+        $this->output->writeln($formattedConfiguration);
     }
 }

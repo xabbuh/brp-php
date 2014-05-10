@@ -38,7 +38,7 @@ class ConsoleWriter implements WriterInterface
      */
     public function write(SolutionInterface $solution)
     {
-        $writer = new ConfigurationWriter($this->output, new TableFormat());
+        $writer = new ConfigurationWriter(new TableFormat(), $this->output);
 
         for ($step = 0; $step < count($solution); $step++) {
             $this->output->writeln('');
