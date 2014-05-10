@@ -51,7 +51,7 @@ class ShowConfigurationCommand extends Command
             return;
         }
 
-        $loader = new FileLoader(new JsonParser(), $resource);
+        $loader = new FileLoader(new JsonParser(), new \SplFileInfo($resource));
         $writer = new ConsoleWriter($output, new TableFormat());
         $writer->write($loader->load());
     }

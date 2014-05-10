@@ -21,15 +21,15 @@ use Xabbuh\BRP\Configuration\Parser\ParserInterface;
 class FileLoader extends AbstractLoader
 {
     /**
-     * @var string The filename
+     * @var \SplFileInfo The file
      */
     private $file;
 
     /**
      * @param ParserInterface $parser The parser used to parse the file contents
-     * @param string          $file   The file to load
+     * @param \SplFileInfo    $file   The file to load
      */
-    public function __construct(ParserInterface $parser, $file)
+    public function __construct(ParserInterface $parser, \SplFileInfo $file)
     {
         parent::__construct($parser);
 
@@ -41,11 +41,11 @@ class FileLoader extends AbstractLoader
      */
     protected function doLoad()
     {
-        if (!is_file($this->file)) {
+        if (!$this->file->isFile()) {
             throw new \RuntimeException($this->file.' is no file');
         }
 
-        if (!is_readable($this->file)) {
+        if (!$this->file->isReadable()) {
             throw new \RuntimeException($this->file.' is not readable');
         }
 

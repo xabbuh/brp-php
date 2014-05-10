@@ -62,7 +62,7 @@ class LanSolveCommand extends Command
             return;
         }
 
-        $loader = new FileLoader(new JsonParser(), $resource);
+        $loader = new FileLoader(new JsonParser(), new \SplFileInfo($resource));
         $algorithm = new LanAlgorithm($lookAhead);
         $solution = $algorithm->solve($loader->load());
         $writer = new ConsoleWriter($output);
