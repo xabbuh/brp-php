@@ -18,13 +18,8 @@ use Xabbuh\BRP\Configuration\Parser\ParserInterface;
  *
  * @author Christian Flothmann <christian.flothmann@xabbuh.de>
  */
-class FileLoader implements LoaderInterface
+class FileLoader extends AbstractLoader
 {
-    /**
-     * @var ParserInterface A parser instance
-     */
-    private $parser;
-
     /**
      * @var string The filename
      */
@@ -36,14 +31,15 @@ class FileLoader implements LoaderInterface
      */
     public function __construct(ParserInterface $parser, $file)
     {
-        $this->parser = $parser;
+        parent::__construct($parser);
+
         $this->file = $file;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function load()
+    protected function doLoad()
     {
         if (!is_file($this->file)) {
             throw new \RuntimeException($this->file.' is no file');
@@ -53,6 +49,6 @@ class FileLoader implements LoaderInterface
             throw new \RuntimeException($this->file.' is not readable');
         }
 
-        return $this->parser->parse(file_get_contents($this->file));
+        return file_get_contents($this->file);
     }
 }
