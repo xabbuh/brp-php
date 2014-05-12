@@ -13,6 +13,7 @@ namespace Xabbuh\BRP\Algorithm;
 
 use Xabbuh\BRP\Configuration\Configuration;
 use Xabbuh\BRP\Configuration\ConfigurationInterface;
+use Xabbuh\BRP\Solution\Movement;
 
 /**
  * @author Christian Flothmann <christian.flothmann@xabbuh.de>
@@ -44,7 +45,7 @@ class LanAlgorithmTest extends \PHPUnit_Framework_TestCase
         ));
         $solution = $this->la5Algorithm->solve($configuration);
 
-        $this->assertEquals(18, count($solution));
+        $this->assertEquals(17, count($solution));
     }
 
     public function testRetrieveTop()
@@ -56,11 +57,7 @@ class LanAlgorithmTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals(
-            $this->createConfiguration(5, array(
-                array(6, 7, 9, 5),
-                array(),
-                array(8),
-            )),
+            Movement::createRetrieveMovement(0),
             $this->processConfiguration($this->la5Algorithm, $configuration)
         );
     }
@@ -74,11 +71,7 @@ class LanAlgorithmTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals(
-            $this->createConfiguration(5, array(
-                array(6, 7, 9, 5, 4),
-                array(1, 3),
-                array(2, 8),
-            )),
+            Movement::createRelocateMovement(1, 0),
             $this->processConfiguration($this->la5Algorithm, $configuration)
         );
     }
@@ -92,11 +85,7 @@ class LanAlgorithmTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals(
-            $this->createConfiguration(5, array(
-                array(6, 7, 9, 5),
-                array(1, 3, 4),
-                array(2, 8),
-            )),
+            Movement::createRelocateMovement(2, 0),
             $this->processConfiguration($this->la5Algorithm, $configuration)
         );
     }
@@ -110,11 +99,7 @@ class LanAlgorithmTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals(
-            $this->createConfiguration(5, array(
-                array(6, 7, 9, 5, 4),
-                array(1),
-                array(2, 8, 3),
-            )),
+            Movement::createRelocateMovement(1, 2),
             $this->processConfiguration($this->la5Algorithm, $configuration)
         );
     }
@@ -128,11 +113,7 @@ class LanAlgorithmTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals(
-            $this->createConfiguration(5, array(
-                array(6, 7, 9, 5, 4),
-                array(3),
-                array(2, 8),
-            )),
+            Movement::createRelocateMovement(2, 1),
             $this->processConfiguration($this->la5Algorithm, $configuration)
         );
     }
@@ -146,20 +127,14 @@ class LanAlgorithmTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals(
-            $this->createConfiguration(4, array(
-                array(6, 3, 1, 4),
-                array(2, 5, 7),
-                array(8),
-            )),
+            Movement::createRelocateMovement(1, 2),
             $this->processConfiguration($this->la2Algorithm, $configuration)
         );
     }
 
     private function processConfiguration(LanAlgorithm $algorithm, ConfigurationInterface $configuration)
     {
-        return $algorithm
-            ->calculateSubsequentConfiguration($configuration)
-            ->getConfiguration();
+        return $algorithm->calculateNextMovement($configuration);
     }
 
     private function createConfiguration($maxHeight, array $stacks = array())

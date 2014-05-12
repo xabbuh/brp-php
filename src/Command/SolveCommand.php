@@ -17,7 +17,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Xabbuh\BRP\Algorithm\AlgorithmFactory;
-use Xabbuh\BRP\Configuration\Loader\LoaderFactory;
+use Xabbuh\BRP\Configuration\Loader\FileLoader;
+use Xabbuh\BRP\Configuration\Parser\JsonParser;
 use Xabbuh\BRP\Solution\Writer\ConsoleWriter;
 
 class SolveCommand extends Command
@@ -64,16 +65,8 @@ class SolveCommand extends Command
             return;
         }
 
-        $loaderFactory = new LoaderFactory();
-        $loader = $loaderFactory->getLoader($resource);
-
-        if (null === $loader) {
-            $output->writeln('No loader found for resource '.$resource);
-
-            return;
-        }
-
-        $solution = $algorithm->solve($loader->load($resource));
+        $loader = new FileLoader(new JsonParser(), new \SplFileInfo($resource));
+        $solution = $algorithm->solve($loader->load());
         $writer = new ConsoleWriter($output);
         $writer->write($solution);
     }

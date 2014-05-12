@@ -12,7 +12,7 @@
 namespace Xabbuh\BRP\Algorithm;
 
 use Xabbuh\BRP\Configuration\ConfigurationInterface;
-use Xabbuh\BRP\Solution\SolutionStep;
+use Xabbuh\BRP\Solution\Movement;
 
 /**
  * Solve a BRP using the LA algorithm described by Petering et al.
@@ -24,32 +24,25 @@ class LaAlgorithm extends BaseAlgorithm
     /**
      * {@inheritDoc}
      */
-    protected function retrieveContainer($stack, ConfigurationInterface $configuration)
-    {
-        $container = $configuration->pop($stack);
-
-        return new SolutionStep('Retrieve target container '.$container, clone $configuration);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     protected function relocateContainer($stack, ConfigurationInterface $configuration)
     {
         $otherStacksLowestContainers = $this->getOtherStacksLowestContainers($stack, $configuration);
 
         if (count($otherStacksLowestContainers['all'][0])) {
             $toStack = $otherStacksLowestContainers['all'][0][0];
-            return $this->doRelocateContainer($stack, $toStack, $configuration);
+
+            return Movement::createRelocateMovement($stack, $toStack);
         } elseif (count($otherStacksLowestContainers['higher']) === 0) {
             $highestContainer = max(array_keys($otherStacksLowestContainers['all']));
             /** @var int $highestContainerStack */
             $highestContainerStack = $otherStacksLowestContainers['all'][$highestContainer];
-            return $this->doRelocateContainer($stack, $highestContainerStack, $configuration);
+
+            return Movement::createRelocateMovement($stack, $highestContainerStack);
         } else {
             $lowestContainer = min(array_keys($otherStacksLowestContainers['higher']));
             $lowestContainerStack = $otherStacksLowestContainers['higher'][$lowestContainer];
-            return $this->doRelocateContainer($stack, $lowestContainerStack, $configuration);
+
+            return Movement::createRelocateMovement($stack, $lowestContainerStack);
         }
     }
 
@@ -88,25 +81,5 @@ class LaAlgorithm extends BaseAlgorithm
         }
 
         return $lowestContainers;
-    }
-
-    /**
-     * Relocates a container from one stack to another.
-     *
-     * @param int                    $fromStack     Stack to relocate from
-     * @param int                    $toStack       Stack to relocate to
-     * @param ConfigurationInterface $configuration The container configuration
-     *
-     * @return \Xabbuh\BRP\Solution\SolutionStepInterface
-     */
-    private function doRelocateContainer($fromStack, $toStack, ConfigurationInterface $configuration)
-    {
-        $container = $configuration->pop($fromStack);
-        $configuration->push($toStack, $container);
-
-        return new SolutionStep(
-            'Relocate container '.$container.' from stack '.$fromStack.' to stack '.$toStack,
-            clone $configuration
-        );
     }
 }

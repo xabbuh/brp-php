@@ -11,6 +11,8 @@
 
 namespace Xabbuh\BRP\Solution;
 
+use Xabbuh\BRP\Configuration\ConfigurationInterface;
+
 /**
  * Solution of a block relocation problem.
  *
@@ -19,16 +21,37 @@ namespace Xabbuh\BRP\Solution;
 class Solution implements SolutionInterface
 {
     /**
-     * @var SolutionStepInterface[] The steps performed to solve the problem
+     * @var ConfigurationInterface The initial container configuration
      */
-    private $steps = array();
+    private $initialConfiguration;
 
     /**
      * {@inheritDoc}
      */
-    public function addSolutionStep(SolutionStepInterface $step)
+    public function setInitialConfiguration(ConfigurationInterface $configuration)
     {
-        $this->steps[] = $step;
+        $this->initialConfiguration = $configuration;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getInitialConfiguration()
+    {
+        return $this->initialConfiguration;
+    }
+
+    /**
+     * @var MovementInterface[] The movements performed to solve the problem
+     */
+    private $movements = array();
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addMovement(MovementInterface $movement)
+    {
+        $this->movements[] = $movement;
     }
 
     /**
@@ -36,18 +59,18 @@ class Solution implements SolutionInterface
      */
     public function count()
     {
-        return count($this->steps);
+        return count($this->movements);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getSolutionStep($step)
+    public function getMovement($movement)
     {
-        if (!isset($this->steps[$step])) {
-            throw new \InvalidArgumentException('Solution step '.$step.' does not exist');
+        if (!isset($this->movements[$movement])) {
+            throw new \InvalidArgumentException('Movement '.$movement.' does not exist');
         }
 
-        return $this->steps[$step];
+        return $this->movements[$movement];
     }
 }

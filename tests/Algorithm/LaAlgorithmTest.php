@@ -12,6 +12,7 @@
 namespace Xabbuh\BRP\Algorithm;
 
 use Xabbuh\BRP\Configuration\Configuration;
+use Xabbuh\BRP\Solution\Movement;
 
 /**
  * @author Christian Flothmann <christian.flothmann@xabbuh.de>
@@ -35,16 +36,10 @@ class LaAlgorithmTest extends \PHPUnit_Framework_TestCase
             array(1),
             array(2, 8, 5),
         ));
-        $solutionStep = $this->algorithm->calculateSubsequentConfiguration($problem);
-        $subsequentConfiguration = $solutionStep->getConfiguration();
 
         $this->assertEquals(
-            $this->createConfiguration(array(
-                array(6, 7, 9, 4, 3),
-                array(),
-                array(2, 8, 5),
-            )),
-            $subsequentConfiguration
+            Movement::createRetrieveMovement(1),
+            $this->algorithm->calculateNextMovement($problem)
         );
     }
 
@@ -55,16 +50,10 @@ class LaAlgorithmTest extends \PHPUnit_Framework_TestCase
             array(),
             array(2, 8, 5),
         ));
-        $solutionStep = $this->algorithm->calculateSubsequentConfiguration($problem);
-        $subsequentConfiguration = $solutionStep->getConfiguration();
 
         $this->assertEquals(
-            $this->createConfiguration(array(
-                array(6, 7, 9, 4, 3),
-                array(5),
-                array(2, 8),
-            )),
-            $subsequentConfiguration
+            Movement::createRelocateMovement(2, 1),
+            $this->algorithm->calculateNextMovement($problem)
         );
     }
 
@@ -75,16 +64,10 @@ class LaAlgorithmTest extends \PHPUnit_Framework_TestCase
             array(3, 5),
             array(10, 8, 9),
         ));
-        $solutionStep = $this->algorithm->calculateSubsequentConfiguration($problem);
-        $subsequentConfiguration = $solutionStep->getConfiguration();
 
         $this->assertEquals(
-            $this->createConfiguration(array(
-                array(4, 1, 7),
-                array(3, 5, 2),
-                array(10, 8, 9),
-            )),
-            $subsequentConfiguration
+            Movement::createRelocateMovement(0, 1),
+            $this->algorithm->calculateNextMovement($problem)
         );
     }
 
@@ -95,16 +78,10 @@ class LaAlgorithmTest extends \PHPUnit_Framework_TestCase
             array(3, 5),
             array(10, 8, 9),
         ));
-        $solutionStep = $this->algorithm->calculateSubsequentConfiguration($problem);
-        $subsequentConfiguration = $solutionStep->getConfiguration();
 
         $this->assertEquals(
-            $this->createConfiguration(array(
-                array(2, 1, 7),
-                array(3, 5),
-                array(10, 8, 9, 20),
-            )),
-            $subsequentConfiguration
+            Movement::createRelocateMovement(0, 2),
+            $this->algorithm->calculateNextMovement($problem)
         );
     }
 
@@ -117,7 +94,7 @@ class LaAlgorithmTest extends \PHPUnit_Framework_TestCase
         ));
         $solution = $this->algorithm->solve($configuration);
 
-        $this->assertEquals(18, count($solution));
+        $this->assertEquals(17, count($solution));
     }
 
     private function createConfiguration(array $stacks)

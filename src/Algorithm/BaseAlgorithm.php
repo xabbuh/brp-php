@@ -13,7 +13,7 @@ namespace Xabbuh\BRP\Algorithm;
 
 use Xabbuh\BRP\Configuration\ConfigurationInterface;
 use Xabbuh\BRP\Solution\Solution;
-use Xabbuh\BRP\Solution\SolutionStep;
+use Xabbuh\BRP\Solution\Movement;
 
 /**
  * Base algorithm class.
@@ -28,14 +28,14 @@ abstract class BaseAlgorithm implements AlgorithmInterface
     public function solve(ConfigurationInterface $configuration)
     {
         $solution = new Solution();
-        $solution->addSolutionStep(new SolutionStep('initial BRP configuration', clone $configuration));
+        $solution->setInitialConfiguration($configuration);
 
         while (!$configuration->isEmpty()) {
-            $solutionStep = $this->calculateSubsequentConfiguration($configuration);
+            $movement = $this->calculateNextMovement($configuration);
 
-            if (null !== $solutionStep) {
-                $solution->addSolutionStep($solutionStep);
-                $configuration = $solutionStep->getConfiguration();
+            if (null !== $movement) {
+                $solution->addMovement($movement);
+                $configuration = $movement->apply($configuration);
             }
         }
 
@@ -44,7 +44,7 @@ abstract class BaseAlgorithm implements AlgorithmInterface
     /**
      * {@inheritDoc}
      */
-    public function calculateSubsequentConfiguration(ConfigurationInterface $configuration)
+    public function calculateNextMovement(ConfigurationInterface $configuration)
     {
         $targetContainer = $configuration->getLowestContainer();
 
@@ -57,7 +57,7 @@ abstract class BaseAlgorithm implements AlgorithmInterface
 
         if ($n === $targetContainer) {
             // immediately retrieve the container if it is the target container
-            return $this->retrieveContainer($stack, $configuration);
+            return Movement::createRetrieveMovement($stack);
         } else {
             // otherwise relocate it
             return $this->relocateContainer($stack, $configuration);
@@ -65,22 +65,12 @@ abstract class BaseAlgorithm implements AlgorithmInterface
     }
 
     /**
-     * Retrieves the top container from the stack.
-     *
-     * @param int                    $stack
-     * @param ConfigurationInterface $configuration
-     *
-     * @return \Xabbuh\BRP\Solution\SolutionStepInterface
-     */
-    abstract protected function retrieveContainer($stack, ConfigurationInterface $configuration);
-
-    /**
      * Relocate a top container.
      *
      * @param int                    $targetStack         The target stack
      * @param ConfigurationInterface $configuration The container configuration
      *
-     * @return \Xabbuh\BRP\Solution\SolutionStepInterface
+     * @return \Xabbuh\BRP\Solution\MovementInterface
      */
     abstract protected function relocateContainer($targetStack, ConfigurationInterface $configuration);
 }

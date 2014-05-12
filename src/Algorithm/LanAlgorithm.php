@@ -12,7 +12,7 @@
 namespace Xabbuh\BRP\Algorithm;
 
 use Xabbuh\BRP\Configuration\ConfigurationInterface;
-use Xabbuh\BRP\Solution\SolutionStep;
+use Xabbuh\BRP\Solution\Movement;
 
 /**
  * Solve a BRP using the LA-N algorithm described by Petering et al.
@@ -29,17 +29,6 @@ class LanAlgorithm extends BaseAlgorithm
     public function __construct($lookAhead)
     {
         $this->lookAhead = $lookAhead;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function retrieveContainer($stack, ConfigurationInterface $configuration)
-    {
-        $subsequentConfiguration = clone $configuration;
-        $container = $subsequentConfiguration->pop($stack);
-
-        return new SolutionStep('Retrieve target container '.$container, $subsequentConfiguration);
     }
 
     /**
@@ -69,18 +58,8 @@ class LanAlgorithm extends BaseAlgorithm
         );
         $relocateFromStack = $configuration->getStackContainingContainer($containerToRelocate);
         $relocationTarget = $this->determineTargetStack($configuration, $containerToRelocate);
-        $subsequentConfiguration = clone $configuration;
-        $subsequentConfiguration->pop($relocateFromStack);
-        $subsequentConfiguration->push($relocationTarget, $containerToRelocate);
 
-        return new SolutionStep(
-            sprintf(
-                'Relocate container %s from stack %s to stack %s',
-                $containerToRelocate,
-                $relocateFromStack,
-                $relocationTarget
-            ),
-            $subsequentConfiguration);
+        return Movement::createRelocateMovement($relocateFromStack, $relocationTarget);
     }
 
     /**

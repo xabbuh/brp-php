@@ -35,9 +35,8 @@ interface AlgorithmInterface
      *
      * @param ConfigurationInterface $configuration The container configuration
      *
-     * @return \Xabbuh\BRP\Solution\SolutionStepInterface The solution step or
-     *                                                    null if the problem
-     *                                                    is already solved
+     * @return \Xabbuh\BRP\Solution\MovementInterface The movement or null if the
+     *                                                problem is already solved
      */
-    public function calculateSubsequentConfiguration(ConfigurationInterface $configuration);
+    public function calculateNextMovement(ConfigurationInterface $configuration);
 }

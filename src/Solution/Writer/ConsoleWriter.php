@@ -39,12 +39,14 @@ class ConsoleWriter implements WriterInterface
     public function write(SolutionInterface $solution)
     {
         $writer = new ConfigurationWriter(new TableFormat(), $this->output);
+        $configuration = $solution->getInitialConfiguration();
+        $writer->write($configuration);
 
         for ($step = 0; $step < count($solution); $step++) {
+            $movement = $solution->getMovement($step);
+            $configuration = $movement->apply($configuration);
             $this->output->writeln('');
-            $this->output->writeln($solution->getSolutionStep($step)->getDescription().':');
-            $this->output->writeln('');
-            $writer->write($solution->getSolutionStep($step)->getConfiguration());
+            $writer->write($configuration);
         }
 
         $this->output->writeln('');

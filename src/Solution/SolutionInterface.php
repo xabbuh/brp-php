@@ -11,6 +11,8 @@
 
 namespace Xabbuh\BRP\Solution;
 
+use Xabbuh\BRP\Configuration\ConfigurationInterface;
+
 /**
  * SolutionInterface.
  *
@@ -19,21 +21,35 @@ namespace Xabbuh\BRP\Solution;
 interface SolutionInterface extends \Countable
 {
     /**
-     * Adds a {@link SolutionStepInterface step} to the solution.
+     * Sets the initial container configuration.
      *
-     * @param SolutionStepInterface $step The step to add
+     * @param ConfigurationInterface $configuration The initial configuration
      */
-    public function addSolutionStep(SolutionStepInterface $step);
+    public function setInitialConfiguration(ConfigurationInterface $configuration);
 
     /**
-     * Returns the nth step of the solution.
+     * Returns the initial configuration.
      *
-     * @param int $step The number of the step to return
-     *
-     * @return SolutionStepInterface The step
-     *
-     * @throws \InvalidArgumentException if the step is not between 0 (inclusive)
-     *                                   and the number of solution steps (exclusive)
+     * @return ConfigurationInterface The initial configuration
      */
-    public function getSolutionStep($step);
+    public function getInitialConfiguration();
+
+    /**
+     * Adds a {@link MovementInterface movement} to the solution.
+     *
+     * @param MovementInterface $movement The movement to add
+     */
+    public function addMovement(MovementInterface $movement);
+
+    /**
+     * Returns the nth movement of the solution.
+     *
+     * @param int $movement The number of the movement to return
+     *
+     * @return MovementInterface The movement
+     *
+     * @throws \InvalidArgumentException if the movement is not between 0 (inclusive)
+     *                                   and the total number of movements (exclusive)
+     */
+    public function getMovement($movement);
 }
